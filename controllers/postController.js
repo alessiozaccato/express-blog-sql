@@ -1,4 +1,7 @@
-const arrayPosts = require("../data/posts");
+// const arrayPosts = require("../data/posts");
+
+const connection = require('../data/db.js');
+
 
 function index(req, res) {
 
