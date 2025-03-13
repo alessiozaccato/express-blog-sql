@@ -9,7 +9,7 @@ function index(req, res) {
 
     // res.json(arrayPosts);
 
-    let filteredPosts = arrayPosts;
+    // let filteredPosts = arrayPosts;
     // filteredPosts è un array di oggetti. Lo devo ciclare (posso anche fare un map), 
     // per modificare tutti gli elementi in modo che la chiave image sia = baseUrl + image const baseUrl = "http://localhost:3000";
 
@@ -22,14 +22,27 @@ function index(req, res) {
     // pippo();
 
 
-    if (req.query.tags) {
-        filteredPosts = arrayPosts.filter(
-            post => post.tags.includes(req.query.tags)
-        );
-    }
+    // if (req.query.tags) {
+    //     filteredPosts = arrayPosts.filter(
+    //         post => post.tags.includes(req.query.tags)
+    //     );
+    // }
 
 
-    res.json(filteredPosts);
+    // res.json(filteredPosts);
+
+    //mySql version
+    const sql = 'SELECT * FROM posts';
+
+    connection.query(sql, (err, results) => {
+        if (err) return res.status(500).json({
+            error: 'Database query error'
+        })
+
+        res.json(results)
+    })
+
+
 
 }
 function show(req, res) {
