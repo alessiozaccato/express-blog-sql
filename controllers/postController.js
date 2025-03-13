@@ -69,22 +69,47 @@ function show(req, res) {
     // res.json(post);
 
     //mysql
+
+    //let's retrieve the id
     const { id } = req.params
 
-    const sql = 'SELECT * FROM posts WHERE id = ?';
+    //let's prepare post query
+    const postSql = 'SELECT * FROM posts WHERE id = ?';
 
-    connection.query(sql, [id], (err, results) => {
+    //let's prepare the query for tags with join
+    const tagssSql = `
+        SELECT tags.*
+        FROM tags
+        JOIN post_tag ON tags.id = post_tag.tag_id
+        WHERE post_tag.post_id = ?
+        `;
+
+
+    //post query
+    connection.query(postSql, [id], (err, postResults) => {
         if (err) return res.status(500).json({
             error: 'Database error'
         })
 
-        if (results.length === 0) return res.status(404).json({
+
+        if (postResults.length === 0) return res.status(404).json({
             status: 404,
             error: "Not Found",
             message: "Post non trovato"
         })
 
-        res.json(results[0])
+        // let's retrieve the post
+        const post = postResults[0];
+
+        // if ok let's do the second quesry for tags
+        connection.query(tagssSql, [id], (err, tagsResults) => {
+            if (err) return res.status(500).json({ error: 'Database query failed' });
+
+            // let's add tags on post
+            post.tags = tagsResults;
+            res.json(post);
+        });
+
     })
 
 
