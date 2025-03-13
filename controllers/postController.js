@@ -169,28 +169,41 @@ function destroy(req, res) {
     // res.send('Eliminazione del post' + req.params.id);
 
 
-    const id = parseInt(req.params.id)
+    // const id = parseInt(req.params.id)
 
 
-    const post = arrayPosts.find(post => post.id === id);
+    // const post = arrayPosts.find(post => post.id === id);
 
 
-    if (!post) {
+    // if (!post) {
 
-        res.status(404);
+    //     res.status(404);
 
-        return res.json({
-            status: 404,
-            error: "Not Found",
-            message: "post non trovato"
+    //     return res.json({
+    //         status: 404,
+    //         error: "Not Found",
+    //         message: "post non trovato"
+    //     })
+    // }
+
+
+
+    // arrayPosts.splice(arrayPosts.indexOf(post), 1);
+
+    // res.sendStatus(204);
+
+    //sql
+    const { id } = req.params;
+
+    const sql = 'DELETE FROM posts WHERE id = ?'
+
+    connection.query(sql, [id], (err) => {
+        if (err) return res.status(500).json({
+            error: 'Database query error'
         })
-    }
 
-
-
-    arrayPosts.splice(arrayPosts.indexOf(post), 1);
-
-    res.sendStatus(204);
+        res.sendStatus(204)
+    })
 
 }
 
